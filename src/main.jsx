@@ -1,13 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
+  Briefcase,
   Check,
-  ChevronDown,
   Download,
   Eye,
   FileText,
   FilePenLine,
+  GraduationCap,
+  Info,
   Link2,
+  ListChecks,
+  MessageSquareText,
+  Palette,
   PanelLeftClose,
   PanelLeftOpen,
   Plus,
@@ -24,49 +29,49 @@ import './styles.css'
 
 const initialResume = {
   photo: '',
-  fullName: 'Aisyah Rahman',
-  age: '28',
-  status: 'Bujang',
-  role: 'Product Designer',
-  email: 'aisyah.rahman@email.com',
-  phone: '+60 12 345 6789',
+  fullName: 'Mohd Faizal bin Ahmad',
+  age: '34',
+  status: 'Berkahwin',
+  role: 'Pemandu Lori (1 - 5 Tan)',
+  email: 'faizal.ahmad@email.com',
+  phone: '+60 13 456 7890',
   address: '',
   postcode: '',
-  location: 'Kuala Lumpur, Malaysia',
-  website: 'aisyahrahman.com',
+  location: 'Shah Alam, Selangor',
+  website: '',
   summary:
-    'Product designer yang gemar mengubah masalah kompleks menjadi pengalaman digital yang ringkas, jelas dan bermakna. Berpengalaman membina produk untuk pengguna di Asia Tenggara.',
-  skills: ['Product strategy', 'Figma', 'User research', 'Design systems', 'Prototyping', 'Facilitation'],
+    'Pemandu lori berpengalaman lebih 8 tahun mengendalikan lori 1 hingga 5 tan untuk penghantaran barangan sejuk beku (frozen) dan kering (dry). Berkemahiran memandu jarak jauh (outstation) merentasi negeri dengan rekod keselamatan yang bersih serta penghantaran yang tepat masa.',
+  skills: ['Pemanduan lori 1-5 tan', 'Barangan frozen & dry', 'Pemanduan outstation', 'Pemeriksaan kenderaan (P/U check)', 'Perancangan laluan & GPS', 'Pengurusan masa penghantaran', 'Keselamatan jalan raya', 'Lesen memandu vokasional (GDL)'],
   experience: [
     {
-      company: 'Swell Labs',
-      role: 'Senior Product Designer',
-      period: '2022 — Kini',
+      company: 'Syarikat Logistik ABC Sdn Bhd',
+      role: 'Pemandu Lori Sejuk Beku & Kering',
+      period: '2021 — Kini',
       description:
-        'Menerajui reka bentuk end-to-end untuk platform kewangan yang digunakan 80k+ pengguna. Meningkatkan activation rate sebanyak 32% melalui onboarding baharu.',
+        'Memandu lori 5 tan menghantar barangan sejuk beku (frozen) dan kering (dry) ke premis pelanggan di seluruh Semenanjung Malaysia. Menguruskan penghantaran outstation secara konsisten dengan rekod ketepatan masa 98%. Bertanggungjawab menjaga rantaian sejuk (cold chain) sepanjang perjalanan.',
     },
     {
-      company: 'Studio Kecil',
-      role: 'Product Designer',
-      period: '2020 — 2022',
+      company: 'XYZ Transport & Trading',
+      role: 'Pemandu Lori 1 - 3 Tan',
+      period: '2017 — 2021',
       description:
-        'Bekerjasama dengan pasukan produk dan engineering untuk melancarkan 6 feature utama daripada discovery hingga production.',
+        'Menghantar pelbagai barangan kering dan sejuk beku dalam dan luar negeri (outstation). Melakukan pemeriksaan kenderaan sebelum dan selepas perjalanan serta memastikan barangan sampai dalam keadaan baik dan selamat.',
     },
   ],
   education: [
     {
-      school: 'Universiti Teknologi MARA',
-      degree: 'Ijazah Sarjana Muda Reka Bentuk Grafik',
-      period: '2016 — 2020',
+      school: 'Institut Latihan Memandu ABC',
+      degree: 'Lesen Memandu Vokasional (GDL) Kelas E',
+      period: '2016',
     },
   ],
 }
 
 const initialResignation = {
-  fullName: 'Aisyah Rahman',
-  role: 'Product Designer',
-  company: 'Swell Labs',
-  manager: 'Puan Nurul Huda',
+  fullName: 'Mohd Faizal bin Ahmad',
+  role: 'Pemandu Lori',
+  company: 'Syarikat Logistik ABC Sdn Bhd',
+  manager: 'Encik Rahman',
   date: '6 September 2026',
   lastDay: '6 Oktober 2026',
   notice: '30 hari',
@@ -120,7 +125,7 @@ function App() {
   const [resume, setResume] = useState(loadResume)
   const [resignation, setResignation] = useState(loadResignation)
   const [activeView, setActiveView] = useState(() => window.location.hash.startsWith('#resignation=') ? 'resignation' : 'resume')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [resignationTemplate, setResignationTemplate] = useState('formal')
   const [resignationTab, setResignationTab] = useState('content')
   const [template, setTemplate] = useState('editorial')
@@ -207,25 +212,69 @@ function App() {
     }
   }
 
+  const goToSection = (id) => {
+    const setTab = activeView === 'resume' ? setActiveTab : setResignationTab
+    setSidebarOpen(false)
+    if (id === 'design') {
+      setTab('design')
+      return
+    }
+    setTab('content')
+    requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }
+
+  const currentTab = activeView === 'resume' ? activeTab : resignationTab
+  const sectionNav = activeView === 'resume'
+    ? [
+        { id: 'sec-profile', label: 'Profil utama', icon: UserRound },
+        { id: 'sec-experience', label: 'Pengalaman', icon: Briefcase },
+        { id: 'sec-education', label: 'Pendidikan', icon: GraduationCap },
+        { id: 'sec-skills', label: 'Kemahiran', icon: ListChecks },
+        { id: 'design', label: 'Gaya & warna', icon: Palette },
+      ]
+    : [
+        { id: 'sec-info', label: 'Maklumat surat', icon: Info },
+        { id: 'sec-reason', label: 'Alasan ringkas', icon: MessageSquareText },
+        { id: 'design', label: 'Gaya surat', icon: Palette },
+      ]
+
   return (
-    <div className={`app-shell ${sidebarOpen ? '' : 'sidebar-collapsed'} ${isSharedView ? 'shared-view' : ''}`} style={{ '--accent': accent }}>
-      <header className="topbar">
-        <div className="topbar-leading"><button className="sidebar-toggle icon-button" title={sidebarOpen ? 'Tutup sidebar' : 'Buka sidebar'} onClick={() => setSidebarOpen((open) => !open)}>{sidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}</button><div className="brand"><span className="brand-mark"><Sparkles size={17} /></span><span>Resume<span className="brand-muted">Studio</span></span></div></div>
-        <div className="topbar-actions">
+    <div className={`app-shell ${sidebarOpen ? 'sidebar-open' : ''} ${isSharedView ? 'shared-view' : ''}`} style={{ '--accent': accent }}>
+      <button className="sidebar-open-btn icon-button" title="Buka sidebar" onClick={() => setSidebarOpen(true)}><PanelLeftOpen size={18} /></button>
+      <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <span className="brand-mark"><Sparkles size={17} /></span>
+          <span className="brand-text">Resume<span className="brand-muted">Studio</span></span>
+          <button className="sidebar-toggle icon-button" title="Tutup sidebar" onClick={() => setSidebarOpen(false)}><PanelLeftClose size={17} /></button>
+        </div>
+
+        <div className="sidebar-scroll">
+          <p className="nav-label">Dokumen</p>
+          <nav className="doc-switch">
+            <button className={`sidebar-item ${activeView === 'resume' ? 'active' : ''}`} onClick={() => { setActiveView('resume'); setSidebarOpen(false) }}><FileText size={17} /><span><strong>Resume</strong><small>Edit & bina resume</small></span></button>
+            <button className={`sidebar-item ${activeView === 'resignation' ? 'active' : ''}`} onClick={() => { setActiveView('resignation'); setSidebarOpen(false) }}><FilePenLine size={17} /><span><strong>Surat Resign</strong><small>Surat letak jawatan</small></span></button>
+          </nav>
+
+          <p className="nav-label">Bahagian</p>
+          <nav className="section-nav">
+            {sectionNav.map(({ id, label, icon: Icon }) => (
+              <button key={id} className={`section-item ${(id === 'design') === (currentTab === 'design') ? 'active' : ''}`} onClick={() => goToSection(id)}>
+                <Icon size={15} /><span>{label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div className="sidebar-bottom">
           <span className="save-status">{saved ? <><Check size={15} /> Disimpan</> : <><Save size={15} /> Menyimpan...</>}</span>
           {activeView === 'resume' && <button className="button button-ghost" onClick={resetResume}><RotateCcw size={16} /> Reset</button>}
           <button className="button button-share" onClick={() => setShareOpen(true)}><Link2 size={16} /> Kongsi</button>
           <button className="button button-primary" onClick={() => window.print()}><Download size={16} /> PDF / Print</button>
         </div>
-      </header>
+      </aside>
 
-      <main className="workspace">
-        <aside className="sidebar">
-          <div className="sidebar-heading"><p className="sidebar-label">Workspace</p><button className="sidebar-toggle icon-button" title="Tutup sidebar" onClick={() => setSidebarOpen(false)}><PanelLeftClose size={17} /></button></div>
-          <button className={`sidebar-item ${activeView === 'resume' ? 'active' : ''}`} onClick={() => setActiveView('resume')}><FileText size={17} /><span><strong>Resume</strong><small>Edit & bina resume</small></span></button>
-          <button className={`sidebar-item ${activeView === 'resignation' ? 'active' : ''}`} onClick={() => setActiveView('resignation')}><FilePenLine size={17} /><span><strong>Surat Resign</strong><small>Surat letak jawatan</small></span></button>
-          <div className="sidebar-footer"><Sparkles size={14} /> Semua disimpan secara automatik</div>
-        </aside>
+      <main className="content-area">
         <aside className="editor-panel">
           {activeView === 'resume' ? <><div className="panel-heading">
             <div><p className="eyebrow">Resume builder</p><h1>Bina cerita kerjaya anda.</h1></div>
@@ -237,7 +286,7 @@ function App() {
           </div>
 
           {activeTab === 'content' ? <div className="form-content">
-            <section className="form-section">
+            <section className="form-section" id="sec-profile">
               <div className="section-label"><span>01</span><h2>Profil utama</h2></div>
               <div className="photo-field">
                 <div className="photo-preview">{resume.photo ? <img src={resume.photo} alt="Foto profil" /> : <UserRound size={22} />}</div>
@@ -260,7 +309,7 @@ function App() {
               <label className="field full-field"><span>Ringkasan profesional</span><textarea value={resume.summary} onChange={(event) => update('summary', event.target.value)} rows="4" /></label>
             </section>
 
-            <section className="form-section">
+            <section className="form-section" id="sec-experience">
               <div className="section-label"><span>02</span><h2>Pengalaman</h2><button className="add-item-button" title="Tambah pengalaman" onClick={addExperience}><Plus size={15} /> Tambah pengalaman</button></div>
               {resume.experience.map((item, index) => <div className="repeat-card" key={`${item.company}-${index}`}>
                 <div className="repeat-header"><span className="item-number">{String(index + 1).padStart(2, '0')}</span><button className="icon-button delete" title="Padam pengalaman" onClick={() => removeItem('experience', index)}><Trash2 size={15} /></button></div>
@@ -268,12 +317,12 @@ function App() {
               </div>)}
             </section>
 
-            <section className="form-section">
+            <section className="form-section" id="sec-education">
               <div className="section-label"><span>03</span><h2>Pendidikan</h2><button className="add-item-button" title="Tambah pendidikan" onClick={addEducation}><Plus size={15} /> Tambah pendidikan</button></div>
               {resume.education.map((item, index) => <div className="repeat-card" key={`${item.school}-${index}`}><div className="repeat-header"><span className="item-number">{String(index + 1).padStart(2, '0')}</span><button className="icon-button delete" title="Padam pendidikan" onClick={() => removeItem('education', index)}><Trash2 size={15} /></button></div><div className="field-grid"><Field label="Institusi" value={item.school} onChange={(value) => updateListItem('education', index, 'school', value)} /><Field label="Tempoh" value={item.period} onChange={(value) => updateListItem('education', index, 'period', value)} /><label className="field full-field"><span>Program / kelayakan</span><input value={item.degree} onChange={(event) => updateListItem('education', index, 'degree', event.target.value)} /></label></div></div>)}
             </section>
 
-            <section className="form-section">
+            <section className="form-section" id="sec-skills">
               <div className="section-label"><span>04</span><h2>Kemahiran</h2></div>
               <label className="field full-field"><span>Asingkan dengan koma</span><input value={resume.skills.join(', ')} onChange={(event) => update('skills', event.target.value.split(',').map((skill) => skill.trim()).filter(Boolean))} /></label>
             </section>
@@ -310,7 +359,7 @@ function ResignationEditorTabs({ resignation, update, template, setTemplate, act
       <button className={activeTab === 'design' ? 'tab active' : 'tab'} onClick={() => setActiveTab('design')}>Gaya</button>
     </div>
     {activeTab === 'content' ? <>
-      <section className="form-section"><div className="section-label"><span>01</span><h2>Maklumat surat</h2></div><div className="field-grid">
+      <section className="form-section" id="sec-info"><div className="section-label"><span>01</span><h2>Maklumat surat</h2></div><div className="field-grid">
         <Field label="Nama penuh" value={resignation.fullName} onChange={(value) => update('fullName', value)} />
         <Field label="Jawatan" value={resignation.role} onChange={(value) => update('role', value)} />
         <Field label="Nama syarikat" value={resignation.company} onChange={(value) => update('company', value)} />
@@ -319,7 +368,7 @@ function ResignationEditorTabs({ resignation, update, template, setTemplate, act
         <Field label="Hari terakhir bekerja" value={resignation.lastDay} onChange={(value) => update('lastDay', value)} />
         <label className="field full-field"><span>Tempoh notis</span><select value={resignation.notice} onChange={(event) => update('notice', event.target.value)}><option>24 jam</option><option>7 hari</option><option>14 hari</option><option>30 hari</option><option>60 hari</option><option>Lain-lain</option></select></label>
       </div></section>
-      <section className="form-section"><div className="section-label"><span>02</span><h2>Alasan ringkas</h2></div><label className="field full-field"><span>Alasan berhenti</span><textarea value={resignation.reason} onChange={(event) => update('reason', event.target.value)} rows="5" /></label></section>
+      <section className="form-section" id="sec-reason"><div className="section-label"><span>02</span><h2>Alasan ringkas</h2></div><label className="field full-field"><span>Alasan berhenti</span><textarea value={resignation.reason} onChange={(event) => update('reason', event.target.value)} rows="5" /></label></section>
     </> : <section className="form-section"><div className="section-label"><span>01</span><h2>Pilih gaya surat</h2></div><div className="template-list">{resignationTemplates.map((item) => <button key={item.id} className={`template-option ${template === item.id ? 'selected' : ''}`} onClick={() => setTemplate(item.id)}><span className={`letter-style-swatch ${item.id}`}><FilePenLine size={18} /></span><span><strong>{item.label}</strong><small>{item.description}</small></span>{template === item.id && <Check size={16} className="template-check" />}</button>)}</div></section>}
   </div>
 }
